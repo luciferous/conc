@@ -1,0 +1,25 @@
+{
+  "name": "conc",
+  "version": "0.0.1",
+  "description": "Wonderful reusable concurrency utilities",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luciferous/conc.git"
+  },
+  "keywords": [
+    "concurrency"
+  ],
+  "author": "Neuman Vong",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/luciferous/conc/issues"
+  },
+  "homepage": "https://github.com/luciferous/conc#readme"
+}
