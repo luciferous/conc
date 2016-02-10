@@ -1,1 +1,1 @@
-exports.asyncqueue = require("asyncqueue");
+exports.asyncqueue = require("./src/asyncqueue");
