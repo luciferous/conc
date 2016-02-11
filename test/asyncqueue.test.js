@@ -8,26 +8,16 @@ test("offers then polls", function(done) {
   q.offer(1);
   q.offer(2);
   q.offer(3);
-  q.poll().then(function(x) {
-  q.poll().then(function(y) {
-  q.poll().then(function(z) {
-    assert(1, x);
-    assert(2, y);
-    assert(3, z);
-    done();
-  })})});
+  Promise.all([q.poll(), q.poll(), q.poll()]).then(function(xyz) {
+    assert.deepEqual([1, 2, 3], xyz);
+  }).then(done, done);
 });
 
 test("polls then offers", function(done) {
   var q = asyncqueue();
-  q.poll().then(function(x) {
-  q.poll().then(function(y) {
-  q.poll().then(function(z) {
-    assert(1, x);
-    assert(2, y);
-    assert(3, z);
-    done();
-  })})});
+  Promise.all([q.poll(), q.poll(), q.poll()]).then(function(xyz) {
+    assert.deepEqual([1, 2, 3], xyz);
+  }).then(done, done);
   setTimeout(function() {
     q.offer(1);
     q.offer(2);
@@ -39,37 +29,22 @@ test("failure then poll", function(done) {
   var q = asyncqueue();
   var exc = new Error("boo");
   q.fail(exc);
-  q.poll().then(
-    function() { done(Error("not ok")) },
-    function(e) {
-      assert.equal(exc, e);
-      done();
-    }
-  );
-});
-
-test("first failure", function(done) {
-  var q = asyncqueue();
-  var exc = new Error("boo");
-  q.fail(exc);
   q.fail(new Error("nope"));
-  q.poll().then(
-    function() { done(Error("not ok")) },
-    function(e) {
-      assert.ok(exc === e);
-      done();
-    }
-  );
+  q.poll().catch(function(e) {
+    assert.ok(exc === e);
+    done();
+  }).catch(done);
 });
 
 test("fail with discard", function(done) {
   var q = asyncqueue();
+  var exc = new Error("boo");
   q.offer(1);
   q.offer(2);
-  q.fail(new Error(), true);
+  q.fail(exc, true);
   var p = q.poll();
   p.lift().then(function(value) {
-    assert.ok(value.rejected);
+    assert.equal(exc, value.rejected);
   }).then(done, done);
 });
 
