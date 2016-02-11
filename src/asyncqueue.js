@@ -1,5 +1,8 @@
 "use strict";
 
+/**
+ * An buffered FIFO queue brokered by Promises.
+ */
 function asyncqueue() {
   var Polling = { promises: [] },
       Offering = { items: [] },
@@ -9,6 +12,10 @@ function asyncqueue() {
   var state = Idle;
 
   return {
+    /**
+     * Demand an item from the front of the queue, potentially waiting if the
+     * queue is empty.
+     */
     poll: function() {
       switch (state) {
       case Failing:
@@ -33,6 +40,11 @@ function asyncqueue() {
         return Promise.resolve(item);
       }
     },
+    /**
+     * Add an item to the queue back of the queue.
+     *
+     * @param {*} item the item to add to the queue.
+     */
     offer: function(item) {
       switch (state) {
       case Failing:
@@ -52,6 +64,14 @@ function asyncqueue() {
         return true;
       }
     },
+    /**
+     * Fail the queue. Subsequent fails and offers are ignored. Subsequent
+     * polls return failure, unless there were items in the queue, then
+     * `discard` determines whether or not they remain available.
+     *
+     * @param {Error} cause the exception.
+     * @param {boolean} discard if true, subsequent polls return failure.
+     */
     fail: function(cause, discard) {
       switch (state) {
       case Failing:
