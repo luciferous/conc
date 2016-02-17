@@ -1,6 +1,6 @@
 {
   "name": "conc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Wonderful reusable concurrency utilities",
   "main": "index.js",
   "directories": {
