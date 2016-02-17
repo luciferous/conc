@@ -12,14 +12,13 @@ function asyncqueue() {
   var state = Idle;
 
   return {
-    numPollers: function() {
+    /**
+     * The number of items in the queue: when Offering, the size is positive;
+     * when Polling, the size is negative.
+     */
+    size: function() {
       switch (state) {
-      case Polling: return Polling.promises.length;
-      default: return 0;
-      }
-    },
-    numOffers: function() {
-      switch (state) {
+      case Polling: return 0 - Polling.promises.length;
       case Offering: return Offering.items.length;
       default: return 0;
       }
