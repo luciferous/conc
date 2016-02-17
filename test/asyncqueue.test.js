@@ -62,6 +62,54 @@ test("fail without discard", function(done) {
   }).then(done, done);
 });
 
+test("wait queue lengths", function(done) {
+  var q = asyncqueue();
+  assert.equal(0, q.numOffers());
+  assert.equal(0, q.numPollers());
+
+  q.offer('hey');
+  q.offer('there');
+  assert.equal(2, q.numOffers());
+  assert.equal(0, q.numPollers());
+
+  q.poll().then(function() {
+    assert.equal(1, q.numOffers());
+    assert.equal(0, q.numPollers());
+    return q.poll().then(function() {
+      assert.equal(0, q.numOffers());
+      assert.equal(0, q.numPollers());
+      q.poll();
+      q.poll();
+      assert.equal(0, q.numOffers());
+      assert.equal(2, q.numPollers());
+    });
+  }).then(done);
+});
+
+test("wait queue lengths", function(done) {
+  var q = asyncqueue();
+  assert.equal(0, q.numOffers());
+  assert.equal(0, q.numPollers());
+
+  q.offer('hey');
+  q.offer('there');
+  assert.equal(2, q.numOffers());
+  assert.equal(0, q.numPollers());
+
+  q.poll().then(function() {
+    assert.equal(1, q.numOffers());
+    assert.equal(0, q.numPollers());
+    return q.poll().then(function() {
+      assert.equal(0, q.numOffers());
+      assert.equal(0, q.numPollers());
+      q.poll();
+      q.poll();
+      assert.equal(0, q.numOffers());
+      assert.equal(2, q.numPollers());
+    });
+  }).then(done);
+});
+
 function test(name, go) {
   var done = false;
   var error;

@@ -12,6 +12,18 @@ function asyncqueue() {
   var state = Idle;
 
   return {
+    numPollers: function() {
+      switch (state) {
+      case Polling: return Polling.promises.length;
+      default: return 0;
+      }
+    },
+    numOffers: function() {
+      switch (state) {
+      case Offering: return Offering.items.length;
+      default: return 0;
+      }
+    },
     /**
      * Demand an item from the front of the queue, potentially waiting if the
      * queue is empty.
